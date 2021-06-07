@@ -1,0 +1,19 @@
+server.port: 7001
+
+logging:
+  level:
+    root: INFO
+    se.magnus: DEBUG
+
+---
+# We can place multiple Spring profiles into the same .yaml file by using "---"
+spring.profiles: docker
+
+server:
+  port: 8080
+
+---
+spring.profiles: heroku
+
+server:
+  port: ${PORT}
