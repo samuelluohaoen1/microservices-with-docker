@@ -1,0 +1,42 @@
+version: '2.1'
+
+# Note that without a docker-compose file, we would need to specify all the settings below when
+# starting up a container. Using a docker-compose file is much more maintainable!.
+
+services:
+  # Name of the container. This will also be the hostname of the container in the internal Docker network.
+  product:
+
+    # A build directive that specifies where to find the Dockerfile that was used to build the Docker image.
+    build: microservices/product-service
+
+    # A memory limit of 350 MB. In actual production, the resource configurations of our microservices
+    # should be optimized.
+    mem_limit: 350m
+
+    # Environment variables. As of now, the `SPRING_PROFILES_ACTIVE` is used to select which profile defined in
+    # our `application.yaml` is active.
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  recommendation:
+    build: microservices/recommendation-service
+    mem_limit: 350m
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  review:
+    build: microservices/review-service
+    mem_limit: 350m
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  product-composite:
+    build: microservices/product-composite-service
+    mem_limit: 350m
+    ports:
+      # We still need to specify the mapping of ports since `product-composite-service` is the one that Docker shall
+      # send/receive the traffic.
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker

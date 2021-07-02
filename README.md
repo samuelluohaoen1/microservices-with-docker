@@ -1,93 +1,71 @@
 # Summary
-This is a demo project in an effort to demonstrate the following basic ideas
-of the **Microservice Architecture**:
-1. Central API management
-2. Central Error Handling 
-3. Batch management of components
-4. Aggregating results of multiple components using the **Edge Server** design pattern.
-5. Testing microservices and API mocking.
+This is a continuation of the previous demo project "spring-boot-microservices".
+The essential idea that this project displays:
+1. Run our microservices with Docker.
+2. Manage multiple docker containers in the same host with Docker Compose and shell scripts.
+3. For managing docker containers on multiple hosts, either Docker Swarm or Kubernetes is needed. Kubernetes will be demonstrated in a later demo project.
 
-## 1. Central API management
-Relevant code can be found in the `api` module, `classpath:se.magnus.api`.
+For a detailed discussion of basic docker usage, read [this](docker-for-microservice.md)
 
-By defining our URL mappings in interfaces, we can have the corresponding
-controllers implement these interfaces where they automatically get the
-URL mappings of our API. For example, 
-`se.magnus.microservices.core.product.ProductServiceImpl` is a `RestController`
-that implements the `se.magnus.api.product.ProductService` interface.
+Below only discusses docker usage related to this project.
 
-## 2. Central Error Handling
-API implementations use the exceptions in the `util` module to signal errors. 
-They will be reported back to the REST client as HTTPS status codes 
-indicating what went wrong.
+# Changes in the Source Code
+1. Added `Dockerfile` under root of `product-composite-service`.
+2. Added `Dockerfile` under root of `product-service`.  -   commented
+3. Added `Dockerfile` under root of `recommendation-service`.
+4. Added `Dockerfile` under root of `review-service`.
+5. Modification in `application.yaml` of `product-composite-service`.
+6. Modification in `application.yaml` of `product-service`.
+7. Modification in `application.yaml` of `recommendation-service`.
+8. Modification in `application.yaml` of `review-service`.
+9. Added `docker-compose.yml` in project root.  -   commented
 
-Note that Spring itself returns the HTTP status code 400 ( BAD_REQUEST) 
-when it detects an invalid request, for example, if the request contains 
-a non-numeric `productId` (`productId` is specified as an integer in the 
-API declaration).
+# Starting up the Microservice Landscape
+1. First we need to build our deployment artifacts (the fat JARs) with gradle. Then build the Docker
+   images with Docker Compose. At project root:
 
-## 3. Batch management of components
+   `./gradlew build`
 
-`Note:` From a DevOps (You build it, you run it) perspective, a multi-project setup might not be preferred. Instead, setting up a separate build pipeline for each microservice project would probably be preferred. However, for the purposes of demonstration, we will use the multi-project setup to make it easier to build and deploy the whole system landscape with a single command.
+   `docker-compose build`
 
-By using Gradle, we can add the following to `settings.gradle` of the project root:
+2. Verify that the build was successful:
 
-```txt
-include ':microservices:product-service'
-include ':microservices:review-service'
-include ':microservices:recommendation-service'
-include ':microservices:product-composite-service'
-include ':api'
-include ':util'
-```
+   `docker images | grep <project root directory name>` using bash or `docker images | Select-String <project root directory name>`
 
-Now we can build all the components using `./gradlew build`
+   e.g., My project root directory has the name `book-demos-with-docker`.
 
-If using the Idea IntelliJ IDE, we can also manage our services easily. For example, we can starting and terminating all our services at the same time:
+   ![image-20210606205325409](README.assets/image-20210606205325409.png)
 
-![image-20210531172049371](README.assets/image-20210531172049371.png)
+3. Start up the microservices landscape:
 
-Otherwise, we would need to do something like  `java -jar microservices/product-composite-service/build/libs/*.jar ` for all our services.
+   `docker-compose up -d`
 
-## 4. The *Edge Server* design pattern
+   Docker Compose have similar flags with Docker. So, `-d` here means to run it in detached mode.
 
-The `product-composite-service` module demonstrate the idea of an **edge server**, a server that has its API exposed to outside requests. When clients make request to our edge server, our edge server acts as a **reverse proxy** that delegates the request to other known instances of our components. Then, the edge server is responsible for aggregating the results returned from the components and respond a carefully tailored "Summary" to the client. Note that many of the classes used by the `product-composite-service` module are under `se.magnus.api` for the purpose of centralized API management.
+4. Logs:
+   
+   `docker-compose logs -f`
+   
+   We can also specify which containers' log we want to look at:
+   
+   `docker-compose logs -f product review` this will only display logs of `product` and `review` containers.
 
-Also note that the current edge server is overly simple in a couple ways:
+Now the system should be up and running on localhost:8080. Test it with the URL `http://localhost:8080/product-composite/123`
 
-* It does not do load balancing among multiple instances of the same component.
-* It does not hide the APIs of other components. So if somehow someone knows the URL of our non-edge components, they can access it freely. This is a serious security issue. This issue shall be resolved in later demo projects using **Spring Security** and **Spring Cloud**.
-* It does not implement the **Service Discover** pattern.
-* ... and many more
+e.g., running `(Invoke-WebRequest http://localhost:8080/product-composite/123).Content | jq` on PowerShell.
 
-All the above problems shall be addressed in later projects.
-
-## 5. Testing Microservices
-
-Since we do not have much business logic at this time, we are not doing any unit test. Instead, we focus on testing the APIs that our microservices expose. We use the non-blocking reactive `WebTestClient` that came with Spring WebFlux.
-
-These tests are located in the test folders of `se.magnus.microservices.core.**`
-
-We can run all tests using `./gradlew test`
-
-The most important one to look at is probably tests of `product-composite-service` where the API mocking is happening.
+![image-20210606212852816](README.assets/image-20210606212852816.png)
 
 
 
-## 5.1. Adding Semi-automated Tests of the Entire Landscape
+or, running `curl http://localhost:8080/product-composite/123 | jq  ` on bash:
 
-Being able to automatically test each microservice in isolation is, of course, very useful, but insufficient!
 
-We need a way to automatically test all of our microservices to ensure that they deliver what we expect!
 
-At this stage of learning, we can achieve it by writing test scripts using something like Bash. Because we want portability even for our test scripts, a great choice would by Python or Go. However, as we will learn in later projects, we will be fully automating tests using Docker.
+![image-20210606212939331](README.assets/image-20210606212939331.png)
 
-# Note
-It could be argued that a separate layer for the business logic should be 
-added when implementing of the microservices. This should ensure that 
-business logic is separated from the protocol-specific code, making it 
-easier both to test and reuse. To avoid unnecessary complexity in the 
-examples provided in this book, we have left out a separate layer for 
-business logic, that is, the microservices implement their business 
-logic directly in the `@RestController` components.
 
+
+Notice how the service IP addresses have changed to the random IP address assigned by Docker.
+
+Now use `docker-compose down` to shut down the microservice landscape.
