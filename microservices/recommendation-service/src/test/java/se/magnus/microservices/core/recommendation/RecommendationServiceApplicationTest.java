@@ -66,7 +66,7 @@ public class RecommendationServiceApplicationTest {
     @Test
     public void getRecommendationsNotFound() {
 
-        int productIdNotFound = 11;
+        int productIdNotFound = 113;
 
         client.get()
                 .uri("/recommendation?productId=" + productIdNotFound)

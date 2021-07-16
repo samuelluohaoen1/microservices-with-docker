@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * would automatically have a `getProduct` method which is mapped to the RESTful
  * url "/product/{productId}".
  */
-public interface ProductService {
+public interface  ProductService {
 
     /**
      * Sample usage: curl $HOST:$PORT/product/1
