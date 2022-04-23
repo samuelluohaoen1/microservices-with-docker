@@ -8,18 +8,18 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-    app: review-pod
-    template:
-      metadata:
-        labels:
-          app: review-pod
-        spec:
-          containers:
-            - name: review-container
-              image: microservices-with-docker_review:latest
-              imagePullPolicy: Never
-              ports:
-                - containerPort: 80
+      app: review-pod
+  template:
+    metadata:
+      labels:
+        app: review-pod
+      spec:
+        containers:
+          - name: review-container
+            image: microservices-with-docker_review:latest
+            imagePullPolicy: Never
+            ports:
+              - containerPort: 80
 ---
 apiVersion: apps/v1
 kind: Deployment
