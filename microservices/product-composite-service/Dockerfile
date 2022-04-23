@@ -10,7 +10,7 @@ EXPOSE 8080
 # root from the Gradble build library, "build/libs".
 # We name it "app.jar". It will appear as "/app.jar"
 # in the docker container.
-ADD ./build/libs/*.jar app.jar
+ADD ./build/libs/product-composite-service-1.0.0-SNAPSHOT.jar /app.jar
 
 # Specifying the command to be used by Docker
 # when a container is started up using this
