@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: review-container
-          image: microservices-with-docker_review:latest
+          image: localhost:5000/review
           imagePullPolicy: Never
           ports:
             - containerPort: 80
@@ -39,7 +39,7 @@ spec:
     spec:
       containers:
         - name: recommendation-container
-          image: microservices-with-docker_recommendation:latest
+          image: localhost:5000/recommendation
           imagePullPolicy: Never
           ports:
             - containerPort: 80
@@ -62,7 +62,7 @@ spec:
     spec:
       containers:
         - name: product-container
-          image: microservices-with-docker_product:latest
+          image: localhost:5000/product
           imagePullPolicy: Never
           ports:
             - containerPort: 80
@@ -75,7 +75,7 @@ metadata:
 spec:
   containers:
     - name: composite-container
-      image: microservices-with-docker_product-composite:latest
+      image: localhost:5000/product-composite
       imagePullPolicy: Never
       ports:
         - containerPort: 80
