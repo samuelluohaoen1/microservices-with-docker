@@ -17,7 +17,7 @@ spec:
       containers:
         - name: review-container
           image: localhost:5000/review/latest
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
 ---
@@ -40,7 +40,7 @@ spec:
       containers:
         - name: recommendation-container
           image: localhost:5000/recommendation/latest
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
 ---
@@ -63,7 +63,7 @@ spec:
       containers:
         - name: product-container
           image: localhost:5000/product/latest
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
 
@@ -76,7 +76,7 @@ spec:
   containers:
     - name: composite-container
       image: localhost:5000/product-composite/latest
-      imagePullPolicy: Never
+      imagePullPolicy: IfNotPresent
       ports:
         - containerPort: 80
           name: composite-port
