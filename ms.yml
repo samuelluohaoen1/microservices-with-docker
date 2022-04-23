@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: review-container
-          image: localhost:5000/review/latest
+          image: samuelluohaoen/ms/review
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
@@ -39,7 +39,7 @@ spec:
     spec:
       containers:
         - name: recommendation-container
-          image: localhost:5000/recommendation/latest
+          image: samuelluohaoen/ms/recommendation
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
@@ -62,7 +62,7 @@ spec:
     spec:
       containers:
         - name: product-container
-          image: localhost:5000/product/latest
+          image: samuelluohaoen/ms/product
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
@@ -75,7 +75,7 @@ metadata:
 spec:
   containers:
     - name: composite-container
-      image: localhost:5000/product-composite/latest
+      image: samuelluohaoen/ms/pc
       imagePullPolicy: IfNotPresent
       ports:
         - containerPort: 80
