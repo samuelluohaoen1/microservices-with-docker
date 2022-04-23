@@ -10,83 +10,83 @@ spec:
     matchLabels:
     app: review-pod
     template:
-        metadata:
-            labels: 
-              app: review-pod
+      metadata:
+        labels:
+          app: review-pod
         spec:
-            containers:
-            -   name: review-container
-                image: microservices-with-docker_review:latest
-                imagePullPolicy: Never
-                ports:
-                -   containerPort: 80
+          containers:
+            - name: review-container
+              image: microservices-with-docker_review:latest
+              imagePullPolicy: Never
+              ports:
+                - containerPort: 80
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: recommendation-deployment
-    labels: recommendation
+  name: recommendation-deployment
+  labels: recommendation
 spec:
-    replicas: 1
-    selector:
-        matchLabels:
-            app: recommendation-pod
-    template:
-        metadata:
-            labels: 
-                app: recommendation-pod
-        spec:
-            containers:
-            -   name: recommendation-container
-                image: microservices-with-docker_recommendation:latest
-                imagePullPolicy: Never
-                ports:
-                -   containerPort: 80
+  replicas: 1
+  selector:
+    matchLabels:
+      app: recommendation-pod
+  template:
+    metadata:
+      labels:
+        app: recommendation-pod
+    spec:
+      containers:
+        - name: recommendation-container
+          image: microservices-with-docker_recommendation:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: product-deployment
-    labels: product
+  name: product-deployment
+  labels: product
 spec:
-    replicas: 1
-    selector:
-        matchLabels:
-            app: product-pod
-    template:
-        metadata:
-            labels: 
-                app: product-pod
-        spec:
-            containers:
-            -   name: product-container
-                image: microservices-with-docker_product:latest
-                imagePullPolicy: Never
-                ports:
-                -   containerPort: 80
-                
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-pod
+  template:
+    metadata:
+      labels:
+        app: product-pod
+    spec:
+      containers:
+        - name: product-container
+          image: microservices-with-docker_product:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
+
 ---
-apiVersion: apps/v1          
+apiVersion: apps/v1
 kind: Pod
 metadata:
-    name: composite-pod
+  name: composite-pod
 spec:
-    containers:
-    -   name: composite-container
-        image: microservices-with-docker_product-composite:latest
-        imagePullPolicy: Never
-        ports:
-        -   containerPort: 80
-            name: composite-port
+  containers:
+    - name: composite-container
+      image: microservices-with-docker_product-composite:latest
+      imagePullPolicy: Never
+      ports:
+        - containerPort: 80
+          name: composite-port
 ---
 apiVersion: apps/v1
 kind: Service
 metadata:
-    name: app-service
+  name: app-service
 spec:
-    ports:
-    -   name: app-port
-        protocol: TCP
-        port: 80
-        targetPort: composite-port
+  ports:
+    - name: app-port
+      protocol: TCP
+      port: 80
+      targetPort: composite-port
 
