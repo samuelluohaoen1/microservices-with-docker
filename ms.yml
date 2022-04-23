@@ -25,7 +25,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: recommendation-deployment
-  labels: recommendation
+  labels:
+    app: recommendation
 spec:
   replicas: 1
   selector:
@@ -47,7 +48,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: product-deployment
-  labels: product
+  labels:
+    app: product
 spec:
   replicas: 1
   selector:
