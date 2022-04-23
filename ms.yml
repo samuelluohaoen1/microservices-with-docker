@@ -95,6 +95,7 @@ spec:
     - 192.168.93.130
 
 ---
+apiVersion: v1
 metadata:
   name: nginx-service
 spec:
